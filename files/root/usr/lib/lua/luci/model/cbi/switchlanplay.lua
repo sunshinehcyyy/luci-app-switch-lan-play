@@ -29,15 +29,15 @@ else
 end  
 
 
-m = Map("switchlanplay", translate("Switch Lan Play"), translate("Switch Can Lan Play With Friends.") .. "<p><p>" ..translate("Status") .. " - " .. state_msg)
+m = Map("switchlanplay", translate("Switch Lan Play"), translate("和你的朋友一起玩switch游戏") .. "<p><p>" ..translate("Status") .. " - " .. state_msg)
 
-r = m:section(TypedSection, "run_server", translate("Server_Set"))
+r = m:section(TypedSection, "run_server", translate("服务器设置"))
 r.addremove = false
 r.anonymous = true
 
 enable = r:option(Flag, "enable", translate("Enable"))
 
-ifname = r:option(ListValue, "ifname", translate("Interfaces"), translate("Same as your Switch Ip interface"))
+ifname = r:option(ListValue, "ifname", translate("Interfaces"), translate("选择和你的switch在同一网络的网卡"))
 
  for k, v in ipairs(luci.sys.net.devices()) do
      if v ~= "lo" then
@@ -47,12 +47,12 @@ ifname = r:option(ListValue, "ifname", translate("Interfaces"), translate("Same 
 
 manually  = r:option(Flag, "manually", translate("manually"),translate("Select manually or Server Lists")) 
 
-relay_server_ip = r:option(Value, "relay_server_ip", translate("relay_server_ip"), translate("Server IP ,Must Input"))                                                                                                                       
+relay_server_ip = r:option(Value, "relay_server_ip", translate("服务器IP"), translate("服务器IP,必须填写！"))                                                                                                                       
 relay_server_ip.datatype="ip4addr"                                                                                                                                                                                                           
-relay_server_ip.default='119.51.174.208'
+relay_server_ip.default='www.tgceo.cn'
 
                                                                                                                                                                                                                                              
-relay_server_port = r:option(Value, "relay_server_port", translate("relay_server_port"),translate("Server Port ,Must Input"))                                                                                                                
+relay_server_port = r:option(Value, "relay_server_port", translate("服务器端口"),translate("服务器的端口，必须填写！"))                                                                                                                
 relay_server_port.datatype="integer"                                                                                                                                                                                                         
 relay_server_port.default=11451                                                                                                                                                                                                              
 
@@ -114,13 +114,14 @@ inits[2].s_description = 'xxx22'
 
 
 
-f = m:section(Table,inits,translate("Server_List"),translate("List Servers"))
+f = m:section(Table,inits,translate("服务器列表"),translate("服务器列表"))
 
-s_name = f:option(DummyValue, "s_name", translate("Server Name"))
+s_name = f:option(DummyValue, "s_name", translate("服务器名称"))
 
 s_address = f:option(DummyValue, "s_address",translate("Server Address")) 
 s_description = f:option(DummyValue, "s_description", translate("Server Description"))
-
+s_ping= f:option(DummyValue, "s_ping", translate("延迟"))
+s_renshu= f:option(DummyValue, "s_renshu", translate("在线人数"))
 --function s_name.cfgvalue(self, section)
 --end
 
@@ -153,13 +154,13 @@ end
 local up_time = os.date("%Y-%m-%d %H:%M:%S",server_data["update_time"])
 
 
-uplist = r:option(Button, "uplist", translate("Update Server List"), translate("After pressing the button please wait 10 seconds<br><font color='blue'>Old file in /etc/switchlanplay_list.json-bak</font>"))
+uplist = r:option(Button, "uplist", translate("更新服务器列表"), translate("按下按钮后请等待至少十秒钟<br><font color='blue'>旧配置文件在： in /etc/switchlanplay_list.json-bak</font>"))
 uplist.inputstyle = "apply"
-uplist.inputtitle = translate("Last date" .. up_time .. " ,Click Update")
+uplist.inputtitle = translate("更新时间：" .. up_time .. " ,点击即可更新")
 
 function uplist.write(self, section, value)                                                                                   
         sys.call("cp -f /etc/switchlanplay_list.json  /etc/switchlanplay_list.json-bak") 
-        sys.call("wget -O- 'http://gpup.top:10240/server/getlist' > /etc/switchlanplay_list.json ")              
+        sys.call("wget -O- 'http://sunshinehcy.3vzhuji.net/server/getlist/switchlanplay_list.json' > /etc/switchlanplay_list.json ")              
         os.execute("sleep " .. 9 )
 	luci.http.write("<script>location.href='./switchlanplay';</script>")                                                                                                                                                                          
         return                                                                                                               
